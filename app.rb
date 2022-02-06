@@ -1,19 +1,14 @@
 # app.rb
 
-require "bundler/setup"
-Bundler.require
 require 'sinatra'
 require 'line/bot'
 require "json"
 require 'net/http'
 require "pg"
+require 'sinatra/reloader'
+require 'dotenv'
 
-if development?
-  require 'sinatra/reloader'
-  require 'dotenv'
-
-  Dotenv.load
-end
+Dotenv.load
 
 def client
   @client ||= Line::Bot::Client.new { |config|
@@ -38,7 +33,7 @@ post '/callback' do
       case event.type
       when Line::Bot::Event::MessageType::Text
         user_id = event["source"]["userId"]
-        conn = PG.connect( dbname: ENV["DB_NAME"], user: ENV["DB_USER"], password: ENV["DB_PASSWORD"] )
+        conn = PG.connect( host: ENV["DB_HOST"], dbname: ENV["DB_NAME"], user: ENV["DB_USER"], password: ENV["DB_PASSWORD"] )
         user_status = conn.exec("SELECT * FROM user_current_status WHERE user_id = $1;", [user_id])
 
         if user_status.count == 0

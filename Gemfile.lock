@@ -29,6 +29,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bundler
   dotenv
   line-bot-api
   pg
