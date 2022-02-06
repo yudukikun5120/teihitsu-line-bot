@@ -11,9 +11,9 @@ require "pg"
 if development?
   require 'sinatra/reloader'
   require 'dotenv'
-end
 
-Dotenv.load
+  Dotenv.load
+end
 
 def client
   @client ||= Line::Bot::Client.new { |config|
