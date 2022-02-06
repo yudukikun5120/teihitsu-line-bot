@@ -1,11 +1,17 @@
 # app.rb
+
+require "bundler/setup"
+Bundler.require
 require 'sinatra'
-require 'sinatra/reloader'
 require 'line/bot'
-require 'dotenv'
 require "json"
 require 'net/http'
 require "pg"
+
+if development?
+  require 'sinatra/reloader'
+  require 'dotenv'
+end
 
 Dotenv.load
 
