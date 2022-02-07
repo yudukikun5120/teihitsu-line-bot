@@ -61,7 +61,7 @@ post '/callback' do
         when 0
           client.reply_message(event['replyToken'], {
             type: "flex",
-            altText: "this is a flex message",
+            altText: "「#{item["q"]}」の読みを記せ｡",
             contents: {
               "type": "bubble",
               "body": {
@@ -114,7 +114,7 @@ post '/callback' do
 
           client.reply_message(event['replyToken'], {
             type: "flex",
-            altText: "this is a flex message",
+            altText: "答えは「#{item["a"]}」です。",
             contents: {
               "type": "bubble",
               "body": {
