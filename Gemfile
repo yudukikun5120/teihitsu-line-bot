@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'bundler'
-gem 'sinatra'
-gem 'line-bot-api'
-gem "pg"
-gem 'sinatra-contrib'
 gem 'dotenv'
+gem 'line-bot-api'
+gem 'pg'
+gem 'sinatra'
+gem 'sinatra-contrib'
