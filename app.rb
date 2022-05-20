@@ -60,7 +60,7 @@ post '/callback' do
         when 0
           client.reply_message(event['replyToken'], {
                                  type: 'flex',
-                                 altText: "「#{item['q']}」の読みを記せ｡",
+                                 altText: "「#{item['problem']}」の読みを記せ｡",
                                  contents: {
                                    "type": 'bubble',
                                    "body": {
@@ -87,7 +87,7 @@ post '/callback' do
                                            },
                                            {
                                              "type": 'text',
-                                             "text": item['q'],
+                                             "text": item['problem'],
                                              "wrap": true,
                                              "weight": 'bold',
                                              "margin": 'lg',
@@ -103,7 +103,7 @@ post '/callback' do
 
           conn.exec('UPDATE user_current_status SET state = 1, item_id = $1 WHERE user_id = $2;', [item_id, user_id])
         when 1
-          if event.message['text'] == item['a']
+          if event.message['text'] == item['correct_answer']
             message_bg_color = '#F1421B'
             message_text_color = '#FFFFFF'
           else
@@ -113,7 +113,7 @@ post '/callback' do
 
           client.reply_message(event['replyToken'], {
                                  type: 'flex',
-                                 altText: "答えは「#{item['a']}」です。",
+                                 altText: "答えは「#{item['correct_answer']}」です。",
                                  contents: {
                                    "type": 'bubble',
                                    "body": {
@@ -135,7 +135,7 @@ post '/callback' do
                                            },
                                            {
                                              "type": 'text',
-                                             "text": item['q'],
+                                             "text": item['problem'],
                                              "wrap": true,
                                              "weight": 'bold',
                                              "margin": 'md',
@@ -145,7 +145,7 @@ post '/callback' do
                                            },
                                            {
                                              "type": 'text',
-                                             "text": item['a'],
+                                             "text": item['correct_answer'],
                                              "align": 'center',
                                              "margin": 'none',
                                              "color": message_text_color
@@ -156,7 +156,7 @@ post '/callback' do
                                            },
                                            {
                                              "type": 'text',
-                                             "text": item['comment'],
+                                             "text": item['note'],
                                              "color": message_text_color,
                                              "margin": 'lg',
                                              "wrap": true
