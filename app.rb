@@ -51,7 +51,7 @@ post '/callback' do
           item_id = user_status['item_id']
         end
 
-        uri = URI.parse("https://teihitsu.deta.dev/items/jyuku-ate/#{item_id}")
+        uri = URI.parse("https://teihitsu.deta.dev/items/jyuku_ate/#{item_id}")
         response = Net::HTTP.get_response(uri)
 
         item = JSON.parse(response.body) if response.code == '200'
