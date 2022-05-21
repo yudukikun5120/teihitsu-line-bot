@@ -10,9 +10,9 @@ Kanji learning on the LINE platform with Kanji Teihitsu questions.
 
 - [https://page.line.me/664jquts](https://page.line.me/664jquts)
 
-# Development
+## Development
 
-## Reference 
+### Reference 
 
 - https://github.com/line/line-bot-sdk-ruby
 - [https://developers.line.biz/flex-simulator/](https://developers.line.biz/flex-simulator/)
@@ -20,12 +20,12 @@ Kanji learning on the LINE platform with Kanji Teihitsu questions.
 - [https://web.deta.sh/home/yudukikun5120/default/micros/teihitsu-api](https://web.deta.sh/home/yudukikun5120/default/micros/teihitsu-api)
 - [https://devcenter.heroku.com/ja/articles/logging](https://devcenter.heroku.com/ja/articles/logging)
 
-## Tasks
+### Tasks
 
 - [x]  Changed LINE account name to _Kanji Teihitsu Training (Admin Approved)_.
 - [ ]  Addition of problem groups
 
-## Sequence diagram
+### Sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -51,7 +51,7 @@ sequenceDiagram
     end
 ```
 
-## Databases
+### Databases
 
 Use Postgres 14 as the database.
 
