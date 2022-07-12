@@ -51,6 +51,16 @@ sequenceDiagram
     end
 ```
 
+### State diagram
+
+```mermaid
+stateDiagram-v2
+
+[*] --> waiting
+waiting --> waiting: answer the problem
+
+```
+
 ### Databases
 
 Use Postgres 14 as the database.
