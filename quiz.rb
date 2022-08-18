@@ -4,6 +4,7 @@ require 'json'
 
 MAX_ITEM_NUMBER = 2184
 
+# The quiz object for message data.
 class Quiz
   attr_reader :id
 
@@ -45,13 +46,10 @@ class Quiz
       message['altText'] = "答えは「#{@problem['correct_answer']}」です。"
       contents = message['contents']['body']['contents'][0]['contents']
       contents[0]['text'] = "Q#{@id}"
-      contents[0]['color'] = message_text_color
       contents[1]['text'] = @problem['problem']
-      contents[1]['color'] = message_text_color
       contents[2]['text'] = @problem['correct_answer']
-      contents[2]['color'] = message_text_color
       contents[4]['text'] = @problem['note']
-      contents[4]['color'] = message_text_color
+      contents[0]['color'] = contents[1]['color'] = contents[2]['color'] = contents[4]['color'] = message_text_color
       message['contents']['body']['backgroundColor'] = message_bg_color
 
       return message
