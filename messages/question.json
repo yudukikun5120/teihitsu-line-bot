@@ -1,0 +1,42 @@
+{
+  "type": "flex",
+  "altText": "",
+  "contents": {
+    "type": "bubble",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "",
+              "align": "center",
+              "size": "xxl",
+              "margin": "none"
+            },
+            {
+              "type": "text",
+              "text": "次の熟字訓・当て字の読みを記せ｡",
+              "align": "center",
+              "margin": "lg"
+            },
+            {
+              "type": "text",
+              "text": "",
+              "wrap": true,
+              "weight": "bold",
+              "margin": "lg",
+              "align": "center",
+              "size": "3xl"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

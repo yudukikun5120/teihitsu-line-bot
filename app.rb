@@ -59,7 +59,7 @@ post '/callback' do
         is_new_user = rows.count.zero?
         initialize_user(conn, user_id) if is_new_user
 
-        new_quiz, messages = is_new_user ? welcome_messages(conn, user_id, event) : quiz_messages(rows, event)
+        new_quiz, messages = is_new_user ? welcome_messages(event) : quiz_messages(rows, event)
 
         client.reply_message(event['replyToken'], messages)
         conn.exec('UPDATE user_current_status SET item_id = $1 WHERE user_id = $2;', [new_quiz.id, user_id])

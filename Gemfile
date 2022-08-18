@@ -12,4 +12,6 @@ gem 'puma'
 gem 'sinatra'
 gem 'sinatra-contrib'
 
-gem "solargraph", "~> 0.45.0"
+gem 'solargraph', '~> 0.45.0'
+
+gem 'ruby-debug-ide', '~> 0.7.3'

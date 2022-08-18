@@ -1,0 +1,57 @@
+{
+  "type": "flex",
+  "altText": "",
+  "contents": {
+    "type": "bubble",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "",
+              "align": "center",
+              "size": "lg",
+              "margin": "none",
+              "color": ""
+            },
+            {
+              "type": "text",
+              "text": "",
+              "wrap": true,
+              "weight": "bold",
+              "margin": "md",
+              "align": "center",
+              "size": "3xl",
+              "color": ""
+            },
+            {
+              "type": "text",
+              "text": "",
+              "align": "center",
+              "margin": "none",
+              "color": ""
+            },
+            {
+              "type": "separator",
+              "margin": "xl"
+            },
+            {
+              "type": "text",
+              "text": "",
+              "color": "",
+              "margin": "lg",
+              "wrap": true
+            }
+          ]
+        }
+      ],
+      "backgroundColor": ""
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 MAX_ITEM_NUMBER = 2184
 
 class Quiz
@@ -22,109 +24,38 @@ class Quiz
   end
 
   def question_message
-    {
-      type: 'flex',
-      altText: "「#{@problem['problem']}」の読みを記せ｡",
-      contents: {
-        type: 'bubble',
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          spacing: 'md',
-          contents: [
-            {
-              type: 'box',
-              layout: 'vertical',
-              contents: [
-                {
-                  type: 'text',
-                  text: "Q#{@id}",
-                  align: 'center',
-                  size: 'xxl',
-                  margin: 'none'
-                },
-                {
-                  type: 'text',
-                  text: '次の熟字訓・当て字の読みを記せ｡',
-                  align: 'center',
-                  margin: 'lg'
-                },
-                {
-                  type: 'text',
-                  text: @problem['problem'],
-                  wrap: true,
-                  weight: 'bold',
-                  margin: 'lg',
-                  align: 'center',
-                  size: '3xl'
-                }
-              ]
-            }
-          ]
-        }
-      }
-    }
+    File.open './messages/question.json' do |f|
+      message = JSON.parse f.read
+
+      message['altText'] = "「#{@problem['problem']}」の読みを記せ｡"
+      contents = message['contents']['body']['contents'][0]['contents']
+      contents[0]['text'] = "Q#{@id}"
+      contents[2]['text'] = @problem['problem']
+
+      return message
+    end
   end
 
   def answer_message
     message_bg_color, message_text_color = set_background_color
-    {
-      type: 'flex',
-      altText: "答えは「#{@problem['correct_answer']}」です。",
-      contents: {
-        "type": 'bubble',
-        "body": {
-          "type": 'box',
-          "layout": 'vertical',
-          "spacing": 'md',
-          "contents": [
-            {
-              "type": 'box',
-              "layout": 'vertical',
-              "contents": [
-                {
-                  "type": 'text',
-                  "text": "Q#{@id}",
-                  "align": 'center',
-                  "size": 'lg',
-                  "margin": 'none',
-                  "color": message_text_color
-                },
-                {
-                  "type": 'text',
-                  "text": @problem['problem'],
-                  "wrap": true,
-                  "weight": 'bold',
-                  "margin": 'md',
-                  "align": 'center',
-                  "size": '3xl',
-                  "color": message_text_color
-                },
-                {
-                  "type": 'text',
-                  "text": @problem['correct_answer'],
-                  "align": 'center',
-                  "margin": 'none',
-                  "color": message_text_color
-                },
-                {
-                  "type": 'separator',
-                  "margin": 'xl'
-                },
-                {
-                  "type": 'text',
-                  "text": @problem['note'],
-                  "color": message_text_color,
-                  "margin": 'lg',
-                  "wrap": true
-                }
-              ]
-            }
-          ],
-          "backgroundColor": message_bg_color
-        }
-      }
-    }
+
+    File.open './messages/answer.json' do |f|
+      message = JSON.parse f.read
+
+      message['altText'] = "答えは「#{@problem['correct_answer']}」です。"
+      contents = message['contents']['body']['contents'][0]['contents']
+      contents[0]['text'] = "Q#{@id}"
+      contents[0]['color'] = message_text_color
+      contents[1]['text'] = @problem['problem']
+      contents[1]['color'] = message_text_color
+      contents[2]['text'] = @problem['correct_answer']
+      contents[2]['color'] = message_text_color
+      contents[4]['text'] = @problem['note']
+      contents[4]['color'] = message_text_color
+      message['contents']['body']['backgroundColor'] = message_bg_color
+
+      return message
+    end
   end
 
   def answer_is_correct?
