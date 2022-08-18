@@ -9,6 +9,7 @@ require 'net/http'
 require 'pg'
 require 'sinatra/reloader'
 require 'dotenv/load'
+require_relative 'quiz'
 
 def client
   @client ||= Line::Bot::Client.new do |config|
@@ -18,11 +19,24 @@ def client
   end
 end
 
-def fetch_problem(item_id)
-  uri = URI.parse "https://teihitsu.deta.dev/items/jyuku_ate/#{item_id}"
-  response = Net::HTTP.get_response uri
+def initialize_user(conn, user_id)
+  conn.exec('INSERT INTO user_current_status (user_id, item_id) VALUES ($1, 0);', [user_id])
+end
 
-  JSON.parse(response.body) if response.code == '200'
+def welcome_messages(event)
+  new_quiz = Quiz.new event
+  messages = [new_quiz.question_message]
+
+  [new_quiz, messages]
+end
+
+def quiz_messages(rows, event)
+  user_status = rows[0]
+  former_quiz = Quiz.new event, user_status['item_id']
+  new_quiz = Quiz.new event
+  messages = [former_quiz.answer_message, new_quiz.question_message]
+
+  [new_quiz, messages]
 end
 
 post '/callback' do
@@ -42,141 +56,14 @@ post '/callback' do
                           password: ENV['DB_PASSWORD'])
         rows = conn.exec('SELECT * FROM user_current_status WHERE user_id = $1;', [user_id])
 
-        if rows.count.zero?
-          conn.exec('INSERT INTO user_current_status (user_id, state, item_id) VALUES ($1, 0, 0);', [user_id])
-        else
-          user_status = rows[0]
-        end
+        is_new_user = rows.count.zero?
+        initialize_user(conn, user_id) if is_new_user
 
-        case user_status['state'].to_i
-        when 0
-          MAX_ITEM_NUMBER = 2184
-          item_id = rand(1..MAX_ITEM_NUMBER)
-        when 1
-          item_id = user_status['item_id']
-        end
+        new_quiz, messages = is_new_user ? welcome_messages(conn, user_id, event) : quiz_messages(rows, event)
 
-        item = fetch_problem(item_id)
+        client.reply_message(event['replyToken'], messages)
+        conn.exec('UPDATE user_current_status SET item_id = $1 WHERE user_id = $2;', [new_quiz.id, user_id])
 
-        case user_status['state'].to_i
-        when 0
-          client.reply_message(
-            event['replyToken'],
-            {
-              type: 'flex',
-              altText: "「#{item['problem']}」の読みを記せ｡",
-              contents: {
-                "type": 'bubble',
-                "body": {
-                  "type": 'box',
-                  "layout": 'vertical',
-                  "spacing": 'md',
-                  "contents": [
-                    {
-                      "type": 'box',
-                      "layout": 'vertical',
-                      "contents": [
-                        {
-                          "type": 'text',
-                          "text": "Q#{item_id}",
-                          "align": 'center',
-                          "size": 'xxl',
-                          "margin": 'none'
-                        },
-                        {
-                          "type": 'text',
-                          "text": '次の熟字訓・当て字の読みを記せ｡',
-                          "align": 'center',
-                          "margin": 'lg'
-                        },
-                        {
-                          "type": 'text',
-                          "text": item['problem'],
-                          "wrap": true,
-                          "weight": 'bold',
-                          "margin": 'lg',
-                          "align": 'center',
-                          "size": '3xl'
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          )
-
-          conn.exec('UPDATE user_current_status SET state = 1, item_id = $1 WHERE user_id = $2;', [item_id, user_id])
-        when 1
-          message_bg_color, message_text_color = if event.message['text'] == item['correct_answer']
-                                                   ['#F1421B', '#FFFFFF']
-                                                 else
-                                                   ['#FFFFFF', '#444444']
-                                                 end
-
-          client.reply_message(
-            event['replyToken'],
-            {
-              type: 'flex',
-              altText: "答えは「#{item['correct_answer']}」です。",
-              contents: {
-                "type": 'bubble',
-                "body": {
-                  "type": 'box',
-                  "layout": 'vertical',
-                  "spacing": 'md',
-                  "contents": [
-                    {
-                      "type": 'box',
-                      "layout": 'vertical',
-                      "contents": [
-                        {
-                          "type": 'text',
-                          "text": "Q#{item_id}",
-                          "align": 'center',
-                          "size": 'lg',
-                          "margin": 'none',
-                          "color": message_text_color
-                        },
-                        {
-                          "type": 'text',
-                          "text": item['problem'],
-                          "wrap": true,
-                          "weight": 'bold',
-                          "margin": 'md',
-                          "align": 'center',
-                          "size": '3xl',
-                          "color": message_text_color
-                        },
-                        {
-                          "type": 'text',
-                          "text": item['correct_answer'],
-                          "align": 'center',
-                          "margin": 'none',
-                          "color": message_text_color
-                        },
-                        {
-                          "type": 'separator',
-                          "margin": 'xl'
-                        },
-                        {
-                          "type": 'text',
-                          "text": item['note'],
-                          "color": message_text_color,
-                          "margin": 'lg',
-                          "wrap": true
-                        }
-                      ]
-                    }
-                  ],
-                  "backgroundColor": message_bg_color
-                }
-              }
-            }
-          )
-
-          conn.exec('UPDATE user_current_status SET state = 0 WHERE user_id = $1;', [user_id])
-        end
         conn.finish
       when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
         response = client.get_message_content(event.message['id'])
