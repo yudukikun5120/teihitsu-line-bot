@@ -11,3 +11,5 @@ gem 'pg'
 gem 'puma'
 gem 'sinatra'
 gem 'sinatra-contrib'
+
+gem "solargraph", "~> 0.45.0"
