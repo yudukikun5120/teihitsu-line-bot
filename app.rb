@@ -52,8 +52,13 @@ post '/callback' do
       case event.type
       when Line::Bot::Event::MessageType::Text
         user_id = event['source']['userId']
-        conn = PG.connect(host: ENV['DB_HOST'], dbname: ENV['DB_NAME'], user: ENV['DB_USER'],
-                          password: ENV['DB_PASSWORD'])
+        conn = PG.connect(
+          host: ENV['DB_HOST'],
+          port: ENV['DB_PORT'],
+          dbname: ENV['DB_NAME'],
+          user: ENV['DB_USER'],
+          password: ENV['DB_PASSWORD']
+        )
         rows = conn.exec('SELECT * FROM user_current_status WHERE user_id = $1;', [user_id])
 
         is_new_user = rows.count.zero?
