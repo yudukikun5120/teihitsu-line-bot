@@ -1,3 +1,5 @@
+**🚧 This repo is no longer maintained.**
+
 # Teihitsu Training LINE Bot
 
 Kanji learning on the LINE platform with Kanji Teihitsu questions.
